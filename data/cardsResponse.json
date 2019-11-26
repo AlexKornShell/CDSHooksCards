@@ -1,0 +1,10 @@
+{
+  "cards": [
+    {
+      "summary": "Screening required",
+      "indicator": "info",
+      "source": "ChlamydiaScreeningCDS.cql",
+      "detail": "Due to the bla-bla the screening is required."
+    }
+  ]
+}

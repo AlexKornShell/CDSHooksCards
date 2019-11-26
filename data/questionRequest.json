@@ -1,0 +1,28 @@
+{
+  "hook": "patient-info",
+  "hookInstance": "1234567890",
+  "fhirServer": "http://their_url.com",
+  "user": "Screener",
+  "prefetch": {
+    "patient": {
+      "resourceType": "Patient",
+      "gender": "male",
+      "birthDate": "1925-12-23",
+      "id": "1288992",
+      "active": true
+    },
+    "questionnaire": {
+      "resourceType": "Questionnaire",
+      "id": "qId0",
+      "title": "Pregnancy",
+      "status": "draft",
+      "item": [
+        {
+          "linkId": "lId0",
+          "text": "Is the patient pregnant?",
+          "type": "boolean"
+        }
+      ]
+    }
+  }
+}

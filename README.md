@@ -1,5 +1,4 @@
 # CDSHooksCards
-# IT-in-Healthcare
 
 ```
 {
@@ -94,5 +93,38 @@ Example questionResponse
       ]
     }
   }
+}
+```
+____
+Example Request
+```
+{
+  "hook": "chlamydia-screening",
+  "hookInstance": "1234567890",
+  "fhirServer": "http://our_url.com",
+  "user": "Practitioner",
+  "prefetch": {
+    "patient": {
+      "resourceType": "Patient",
+      "gender": "male",
+      "birthDate": "1925-12-23",
+      "id": "1288992",
+      "active": true
+    }
+  }
+}
+```
+____
+Example cardsResponse
+```
+{
+  "cards": [
+    {
+      "summary": "Screening required",
+      "indicator": "info",
+      "source": "ChlamydiaScreeningCDS.cql",
+      "detail": "Due to the bla-bla the screening is required."
+    }
+  ]
 }
 ```

@@ -1,20 +1,47 @@
-# CDSHooksCards
-
+# CDSHooksCards test project  
+  
+### This hook provides decision making on Chlamydia Screening test proposal  
+  
+This decision making is based on ChlamydiaScreeningCDS cql-library.  
+  
+##### Request  
+  
+Expected request to Chlamydia Screening Test service has to 
+satisfy CDS Hooks specification as well as contain Patient FHIR resource in prefetch.  
+  
+It has to be sent in HTTP-request body to to the url: http://our_url.com/request  
+  
+The example of such request is listed below:
+  
 ```
 {
-  "resourceType" : "Questionnaire",
-  "id" : [{ Identifier }],          // Additional identifier for the questionnaire
-  "title" : "<string>",             // Name for this questionnaire (human friendly)
-  "status" : "<code>",              // R!  draft | active | retired | unknown
-  "item" : [{                       // C? Questions and sections within the Questionnaire
-    "linkId" : "<string>",          // R!  Unique id for item in questionnaire
-    "text" : "<string>",            // Primary text for the item
-    "type" : "<code>",              // R!  group | display | boolean | decimal | integer | date | dateTime +
-  }]
+  "hook": "chlamydia-screening",
+  "hookInstance": "1234567890",
+  "fhirServer": "http://our_url.com",
+  "user": "Practitioner",
+  "prefetch": {
+    "patient": {
+      "resourceType": "Patient",
+      "gender": "female",
+      "birthDate": "1995-12-23",
+      "id": "1288992",
+      "active": true
+    }
+  }
 }
 ```
-____
-Example questionRequest
+  
+For more information refer to:  
+- https://cds-hooks.org/  
+- https://www.hl7.org/FHIR/patient.html  
+  
+##### Question  
+  
+In response to the request, Questionnaire FHIR resource will be sent 
+to specify certain details in patient's condition.  
+  
+The example of such questionnaire request is listed below:  
+  
 ```
 {
   "hook": "patient-info",
@@ -24,8 +51,8 @@ Example questionRequest
   "prefetch": {
     "patient": {
       "resourceType": "Patient",
-      "gender": "male",
-      "birthDate": "1925-12-23",
+      "gender": "female",
+      "birthDate": "1995-12-23",
       "id": "1288992",
       "active": true
     },
@@ -37,7 +64,7 @@ Example questionRequest
       "item": [
         {
           "linkId": "lId0",
-          "text": "Is the patient pregnant?",
+          "text": "Did the patient take a Chlamydia Screening test?",
           "type": "boolean"
         }
       ]
@@ -45,8 +72,19 @@ Example questionRequest
   }
 }
 ```
-____
-Example questionResponse
+  
+For more information refer to:  
+- https://www.hl7.org/fhir/questionnaire.html  
+  
+##### Response  
+  
+QuestionnaireResponse FHIR resource is expected in the next HTTP-request 
+sent to to the url: http://our_url.com/answer  
+It has to contain both Patient and relevant Questionnaire resources along with
+QuestionnaireResponse in the prefetch.  
+  
+The example of such QuestionnaireResponse response is listed below:  
+  
 ```
 {
   "hook": "chlamydia-screening",
@@ -56,8 +94,8 @@ Example questionResponse
   "prefetch": {
     "patient": {
       "resourceType": "Patient",
-      "gender": "male",
-      "birthDate": "1925-12-23",
+      "gender": "female",
+      "birthDate": "1995-12-23",
       "id": "1288992",
       "active": true
     },
@@ -95,36 +133,30 @@ Example questionResponse
   }
 }
 ```
-____
-Example Request
-```
-{
-  "hook": "chlamydia-screening",
-  "hookInstance": "1234567890",
-  "fhirServer": "http://our_url.com",
-  "user": "Practitioner",
-  "prefetch": {
-    "patient": {
-      "resourceType": "Patient",
-      "gender": "male",
-      "birthDate": "1925-12-23",
-      "id": "1288992",
-      "active": true
-    }
-  }
-}
-```
-____
-Example cardsResponse
+  
+For more information refer to:  
+- https://www.hl7.org/fhir/questionnaireresponse.html  
+  
+##### Result  
+  
+In case when all required information is gathered, CDS Cards will be sent in the
+response to the previous HTTP-request.  
+  
+The example of such CDS Cards response is listed below:  
+  
 ```
 {
   "cards": [
     {
-      "summary": "Screening required",
+      "summary": "Chlamydia Screening test required",
       "indicator": "info",
       "source": "ChlamydiaScreeningCDS.cql",
-      "detail": "Due to the bla-bla the screening is required."
+      "detail": "Patient is at risk for chlamydia infection by age group, no screening test available in past 1 year"
     }
   ]
 }
 ```
+  
+For more information refer to:  
+- https://cds-hooks.org/#cds-cards  
+- https://cds-hooks.org/specification/1.0/  

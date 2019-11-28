@@ -44,6 +44,8 @@ public class CDSHooksCards {
 
     static class Prefetch {
         Patient patient;
+        Observation observation;
+        DiagnosticReport diagnosticReport;
         Questionnaire questionnaire;
         QuestionnaireResponse questionnaireresponse;
 
@@ -169,7 +171,9 @@ public class CDSHooksCards {
     }
 
     static class Observation {
-        String title;
+        String resourceType;
+        String status;
+        String code;
         String observedAtTime; // Дата наблюдения
     }
 
@@ -190,7 +194,9 @@ public class CDSHooksCards {
     }
 
     static class DiagnosticReport {
-        String title;
+        String resourceType;
+        String status;
+        String code;
         String observedAtTime; // Дата проведения
         String value; // Результат
     }
@@ -198,22 +204,28 @@ public class CDSHooksCards {
     static class ChlamydiaPatient {
         String id;
         String gender;
-        int ageInYears;
+        int ageInYears = -1;
         // Has to be changed from Strings and int to classes and Maps!!!
         // int pregnancy = -1; // Test field
         int sexuallyActive = -1;
         HashMap<String, Condition> conditions;
-        HashMap<String, Observation> observations;
+        HashMap<String, Observation> observations = new HashMap<>();
         HashMap<String, MedicationTreatment> medicationTreatments;
         HashMap<String, MedicationPrescription> medicationPrescriptions;
         HashMap<String, DiagnosticOrder> diagnosticOrders;
-        HashMap<String, DiagnosticReport> diagnosticReports;
+        HashMap<String, DiagnosticReport> diagnosticReports = new HashMap<>();
         String procedure;
 
-        public ChlamydiaPatient(Patient patient) {
-            this.id = patient.id;
-            this.gender = patient.gender;
-            this.ageInYears = patient.age();
+        public ChlamydiaPatient(Prefetch prefetch) {
+            this.id = prefetch.patient.id;
+            this.gender = prefetch.patient.gender;
+            this.ageInYears = prefetch.patient.age();
+            if (prefetch.observation != null) {
+                this.observations.put(prefetch.observation.code, prefetch.observation);
+            }
+            if (prefetch.diagnosticReport != null) {
+                this.diagnosticReports.put(prefetch.diagnosticReport.code, prefetch.diagnosticReport);
+            }
         }
     }
 

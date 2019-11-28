@@ -49,8 +49,13 @@ public class Test {
     String sexuallyTransmittedInfectionDateType = "string";
 
 
-    static int yearsPassed(String date) {
-        return Period.between(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now()).getYears();
+    static boolean checkPatient(CDSHooksCards.ChlamydiaPatient p) {
+        return p.gender != null && p.ageInYears != -1 && p.sexuallyActive != -1 &&
+                !p.observations.isEmpty() && !p.diagnosticReports.isEmpty();
+    }
+
+    static double yearsPassed(String date) {
+        return Period.between(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now()).toTotalMonths() / 12f;
     }
 
     static boolean isFemale(CDSHooksCards.ChlamydiaPatient p) {
@@ -105,10 +110,14 @@ public class Test {
             // Read the request
             CDSHooksCards.Request request = gson.fromJson(reader, CDSHooksCards.Request.class);
             // Extract patient
-            CDSHooksCards.ChlamydiaPatient patient = new CDSHooksCards.ChlamydiaPatient(request.prefetch.patient);
+            CDSHooksCards.ChlamydiaPatient patient = new CDSHooksCards.ChlamydiaPatient(request.prefetch);
             patients.put(patient.id, patient);
             System.out.println(patients.get("1288992"));
-            System.out.println(inAgeAndOtherAtRiskPopulation(patient));
+//            patient.sexuallyActive = 1;
+//            System.out.println(checkPatient(patient));
+//            System.out.println(inAtRiskAgePopulation(patient));
+//            System.out.println(inOtherAtRiskPopulation(patient));
+//            System.out.println(!hasChlamydiaTest(patient));
 
             // Check condition, based on cql tree
             // This condition is wrong. There is no pregnancy field in real CQL, there is diagnosticOrder.

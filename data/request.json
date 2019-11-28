@@ -6,10 +6,23 @@
   "prefetch": {
     "patient": {
       "resourceType": "Patient",
-      "gender": "male",
-      "birthDate": "1925-12-23",
+      "gender": "female",
+      "birthDate": "1995-12-23",
       "id": "1288992",
       "active": true
+    },
+    "observation": {
+      "resourceType": "Observation",
+      "status": "preliminary",
+      "code": "Risk Evaluation, Document: Sexually Transmitted Infection",
+      "observedAtTime": "2018-12-12"
+    },
+    "diagnosticReport": {
+      "resourceType": "DiagnosticReport",
+      "status": "preliminary",
+      "code": "Laboratory Test, Result: Chlamydia Screening",
+      "observedAtTime": "2018-03-12",
+      "value": "Negative"
     }
   }
 }

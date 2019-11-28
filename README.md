@@ -4,14 +4,18 @@
   
 This decision making is based on ChlamydiaScreeningCDS cql-library.  
   
-##### Request  
+#### Request  
   
 Expected request to Chlamydia Screening Test service has to 
 satisfy CDS Hooks specification as well as contain Patient FHIR resource in prefetch.  
+Additionally to the Patient resource, Observation and DiagnosticReport FHIR resources might be provided 
+if the patient had such observations, diagnostics:
+Observation resource, referred to "Risk Evaluation, Document: Sexually Transmitted Infection"
+DiagnosticReport resource, referred to "Laboratory Test, Result: Chlamydia Screening"  
   
-It has to be sent in HTTP-request body to to the url: http://our_url.com/request  
+This data has to be sent in HTTP-request body to to the url: http://our_url.com/request  
   
-The example of such request is listed below:
+The example of such request with only Patient resource is listed below:
   
 ```
 {
@@ -31,11 +35,46 @@ The example of such request is listed below:
 }
 ```
   
+The example of such request with Patient, Observation and DiagnosticReport resources is listed below:  
+  
+```
+{
+  "hook": "chlamydia-screening",
+  "hookInstance": "1234567890",
+  "fhirServer": "http://our_url.com",
+  "user": "Practitioner",
+  "prefetch": {
+    "patient": {
+      "resourceType": "Patient",
+      "gender": "female",
+      "birthDate": "1995-12-23",
+      "id": "1288992",
+      "active": true
+    },
+    "observation": {
+      "resourceType": "Observation",
+      "status": "preliminary",
+      "code": "Risk Evaluation, Document: Sexually Transmitted Infection",
+      "observedAtTime": "2018-12-12"
+    },
+    "diagnosticReport": {
+      "resourceType": "DiagnosticReport",
+      "status": "preliminary",
+      "code": "Laboratory Test, Result: Chlamydia Screening",
+      "observedAtTime": "2018-03-12",
+      "value": "Negative"
+    }
+  }
+}
+```
+  
 For more information refer to:  
 - https://cds-hooks.org/  
 - https://www.hl7.org/FHIR/patient.html  
+- https://www.hl7.org/fhir/observation.html  
+- https://www.hl7.org/fhir/diagnosticreport.html  
   
-##### Question  
+#### Question  
   
 In response to the request, Questionnaire FHIR resource will be sent 
 to specify certain details in patient's condition.  
@@ -76,7 +115,7 @@ The example of such questionnaire request is listed below:
 For more information refer to:  
 - https://www.hl7.org/fhir/questionnaire.html  
   
-##### Response  
+#### Response  
   
 QuestionnaireResponse FHIR resource is expected in the next HTTP-request 
 sent to to the url: http://our_url.com/answer  
@@ -137,7 +176,7 @@ The example of such QuestionnaireResponse response is listed below:
 For more information refer to:  
 - https://www.hl7.org/fhir/questionnaireresponse.html  
   
-##### Result  
+#### Result  
   
 In case when all required information is gathered, CDS Cards will be sent in the
 response to the previous HTTP-request.  

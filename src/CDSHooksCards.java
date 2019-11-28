@@ -2,6 +2,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
 
 public class CDSHooksCards {
 
@@ -120,6 +121,7 @@ public class CDSHooksCards {
     static class Answer {
         Boolean valueBoolean;
         String valueString;
+        int valueInteger;
     }
 
     static class QuestionnaireResponse {
@@ -130,7 +132,7 @@ public class CDSHooksCards {
         Object[] contained;
         AnswerItem[] item;
 
-        public QuestionnaireResponse(String title, AnswerItem[] item) {
+        public QuestionnaireResponse(AnswerItem[] item) {
             this.item = item;
             this.resourceType = "QuestionnaireResponse";
             this.id = stringQuestionnaireId();
@@ -160,19 +162,53 @@ public class CDSHooksCards {
         }
     }
 
+    // Пока что везде title - собственно, описание, что это за состояние, наблюдение и т.д..
+    static class Condition {
+        String title;
+        String effectiveTime; // Дата постановки состояния
+    }
+
+    static class Observation {
+        String title;
+        String observedAtTime; // Дата наблюдения
+    }
+
+    static class MedicationTreatment {
+        String title;
+        String performanceTime; // Начало лечения
+    }
+
+    static class MedicationPrescription {
+        String title;
+        String reason; // Причина назначения
+        String orderedAtTime; // Начало назначения
+    }
+
+    static class DiagnosticOrder {
+        String title;
+        String orderedAtTime; // Дата назначения
+    }
+
+    static class DiagnosticReport {
+        String title;
+        String observedAtTime; // Дата проведения
+        String value; // Результат
+    }
+
     static class ChlamydiaPatient {
         String id;
         String gender;
         int ageInYears;
         // Has to be changed from Strings and int to classes and Maps!!!
-        int pregnancy = -1; // Test field
-        int sexuallyActive;
-        String condition;
-        String observation;
-        String diagnosticOrder;
+        // int pregnancy = -1; // Test field
+        int sexuallyActive = -1;
+        HashMap<String, Condition> conditions;
+        HashMap<String, Observation> observations;
+        HashMap<String, MedicationTreatment> medicationTreatments;
+        HashMap<String, MedicationPrescription> medicationPrescriptions;
+        HashMap<String, DiagnosticOrder> diagnosticOrders;
+        HashMap<String, DiagnosticReport> diagnosticReports;
         String procedure;
-        String medicationPrescription;
-        String medicationTreatment;
 
         public ChlamydiaPatient(Patient patient) {
             this.id = patient.id;

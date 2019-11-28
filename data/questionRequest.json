@@ -14,12 +14,12 @@
     "questionnaire": {
       "resourceType": "Questionnaire",
       "id": "qId0",
-      "title": "Pregnancy",
+      "title": "Sexually Active",
       "status": "draft",
       "item": [
         {
           "linkId": "lId0",
-          "text": "Is the patient pregnant?",
+          "text": "Is the patient sexually active?",
           "type": "boolean"
         }
       ]
